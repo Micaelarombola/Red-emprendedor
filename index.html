@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Emprende</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-container">
+      <a href="#inicio" class="brand">
+        <div class="brand-mark">RE</div>
+        <div class="brand-text">
+          <strong>Red Emprende</strong>
+          <span>Comunidad de emprendedores</span>
+        </div>
+      </a>
+
+      <nav class="nav" id="navMenu">
+        <a href="#inicio">Inicio</a>
+        <a href="#necesitas">¿Qué necesitás?</a>
+        <a href="#destacado-semana">Destacado</a>
+        <a href="#muro-ayuda">Ayuda</a>
+        <a href="#colaboraciones">Colaboraciones</a>
+        <a href="#recursos">Recursos</a>
+        <a href="#premium">Planes</a>
+        <a href="#sumate">Sumate</a>
+        <a href="#red">Red Activa</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#sumate" class="btn2 desktop-only">Publicar</a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" id="inicio">
+    <div class="hero-bg"></div>
+
+    <div class="hero-container">
+      <div class="hero-copy">
+        <p class="kicker">Red Emprende</p>
+        <h1>Mostrá tu emprendimiento, conectá con otros y hacé crecer tu comunidad</h1>
+        <p class="hero-text">
+          Una plataforma pensada para emprendedores reales: con perfiles, fotos, comentarios,
+          pedidos de ayuda, colaboraciones y recursos para crecer.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#red" class="btn2">Ver emprendedores</a>
+          <a href="#sumate" class="btn-outline">Quiero publicar</a>
+        </div>
+
+        <div class="hero-mini-stats">
+          <div class="hero-stat">
+            <strong id="heroTotal">0</strong>
+            <span>Emprendedores</span>
+          </div>
+          <div class="hero-stat">
+            <strong id="heroCategories">0</strong>
+            <span>Rubros activos</span>
+          </div>
+          <div class="hero-stat">
+            <strong id="heroComments">0</strong>
+            <span>Comentarios</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-badge">Nuevo</div>
+        <h3>Una red con valor real</h3>
+        <p>
+          No es solo un catálogo. Acá también hay interacción, visibilidad,
+          pedidos de ayuda, recursos gratis y oportunidades de colaboración.
+        </p>
+        <ul>
+          <li>✔ Perfiles emprendedores</li>
+          <li>✔ Comunidad activa</li>
+          <li>✔ Recursos para crecer</li>
+          <li>✔ Espacios destacados y planes premium</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section" id="necesitas">
+    <div class="section-head center">
+      <p class="kicker">Interacción</p>
+      <h2>¿Qué necesitás hoy?</h2>
+      <p>Elegí una opción y descubrí perfiles o espacios pensados para eso.</p>
+    </div>
+
+    <div class="needs-grid">
+      <button class="need-card" data-help-target="Difusión" type="button">
+        <span>📣</span>
+        <strong>Quiero difusión</strong>
+      </button>
+
+      <button class="need-card" data-help-target="Clientes" type="button">
+        <span>🛍️</span>
+        <strong>Busco clientes</strong>
+      </button>
+
+      <button class="need-card" data-help-target="Colaboraciones" type="button">
+        <span>🤝</span>
+        <strong>Quiero colaborar</strong>
+      </button>
+
+      <button class="need-card" data-help-target="Proveedor" type="button">
+        <span>📦</span>
+        <strong>Necesito proveedor</strong>
+      </button>
+
+      <button class="need-card" data-scroll="#recursos" type="button">
+        <span>📚</span>
+        <strong>Quiero aprender</strong>
+      </button>
+    </div>
+  </section>
+
+  <section class="week-feature" id="destacado-semana">
+    <div class="week-feature-content">
+      <div>
+        <p class="kicker">Emprendimiento de la semana</p>
+        <h2>WebMic</h2>
+        <p>
+          Esta semana destacamos un emprendimiento que impulsa marcas con diseño web,
+          tiendas online, contenido y presencia digital.
+        </p>
+
+        <div class="week-actions">
+          <a href="#red" class="btn2">Ver perfiles</a>
+          <a href="#premium" class="btn-outline">Quiero destacar el mío</a>
+        </div>
+      </div>
+
+      <div class="week-badge-card">
+        <span>⭐ Destacado</span>
+        <strong>Más visibilidad</strong>
+        <p>Podés ofrecer este espacio como servicio premium dentro de tu página.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="premium-section" id="premium">
+    <div class="section-head center">
+      <p class="kicker">Planes para destacar</p>
+      <h2>Elegí cómo querés mostrar tu emprendimiento</h2>
+      <p>
+        Desde una publicación simple hasta una presencia destacada con más visibilidad,
+        diseño y promoción dentro de la comunidad.
+      </p>
+    </div>
+
+    <div class="plans-wrap">
+      <article class="plan-card basic">
+        <div class="plan-top">
+          <span class="plan-label">Básico</span>
+          <h3>Presencia simple</h3>
+          <p>Para estar en la red y mostrar tu emprendimiento.</p>
+        </div>
+
+        <div class="plan-price">
+          <strong>$3.500</strong>
+          <span>pago único</span>
+        </div>
+
+        <ul class="plan-list">
+          <li>Perfil dentro de la página</li>
+          <li>Foto principal</li>
+          <li>Nombre, rubro y zona</li>
+          <li>Redes sociales y contacto</li>
+          <li>Aparición en el listado general</li>
+        </ul>
+
+        <button class="plan-btn" type="button" onclick="openPlanModal('Básico', '$3.500', 'pago único')">
+          Elegir plan
+        </button>
+      </article>
+
+      <article class="plan-card pro">
+        <div class="plan-badge">🔥 Más elegido</div>
+
+        <div class="plan-top">
+          <span class="plan-label">Impulso</span>
+          <h3>Más visibilidad</h3>
+          <p>Para quienes quieren verse mejor y destacar más.</p>
+        </div>
+
+        <div class="plan-price">
+          <strong>$7.500</strong>
+          <span>por publicación</span>
+        </div>
+
+        <ul class="plan-list">
+          <li>Todo lo del plan básico</li>
+          <li>Diseño más llamativo del perfil</li>
+          <li>Hasta 3 fotos extra</li>
+          <li>Sello “Recomendado”</li>
+          <li>Mejor ubicación en la página</li>
+        </ul>
+
+        <button class="plan-btn" type="button" onclick="openPlanModal('Impulso', '$7.500', 'por publicación')">
+          Quiero este
+        </button>
+      </article>
+
+      <article class="plan-card premium-plus">
+        <div class="plan-top">
+          <span class="plan-label">Premium</span>
+          <h3>Máxima exposición</h3>
+          <p>Para aparecer primero y tener una presencia mucho más fuerte.</p>
+        </div>
+
+        <div class="plan-price">
+          <strong>$15.000</strong>
+          <span>por semana</span>
+        </div>
+
+        <ul class="plan-list">
+          <li>Todo lo del plan impulso</li>
+          <li>Emprendimiento destacado de la semana</li>
+          <li>Banner o espacio especial en la página</li>
+          <li>Difusión extra en tus redes</li>
+          <li>Prioridad total dentro del sitio</li>
+        </ul>
+
+        <button class="plan-btn premium-btn" type="button" onclick="openPlanModal('Premium', '$15.000', 'por semana')">
+          Destacar mi emprendimiento
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <section class="support-local">
+    <div class="support-local-box">
+      <h2>Apoyá local</h2>
+      <p>
+        Cada compra, recomendación o historia compartida ayuda a que un emprendimiento siga creciendo.
+      </p>
+    </div>
+  </section>
+
+  <section class="help-board-section" id="muro-ayuda">
+    <div class="section-head center">
+      <p class="kicker">Comunidad real</p>
+      <h2>Necesidades activas de la comunidad</h2>
+      <p>Un tablón con pedidos concretos para conectar emprendedores entre sí.</p>
+    </div>
+
+    <div class="help-board" id="helpBoardList"></div>
+  </section>
+
+  <section class="collab-section" id="colaboraciones">
+    <div class="section-head center">
+      <p class="kicker">Conectá y colaborá</p>
+      <h2>Match emprendedor</h2>
+      <p>
+        Perfiles y áreas ideales para armar alianzas, intercambiar servicios y crecer juntos.
+      </p>
+    </div>
+
+    <div class="collab-grid">
+      <article class="collab-card">
+        <span>📸</span>
+        <h3>Fotografía</h3>
+        <p>Para marcas que necesitan producto, contenido o imagen profesional.</p>
+      </article>
+
+      <article class="collab-card">
+        <span>🎥</span>
+        <h3>Creadoras de contenido</h3>
+        <p>Ideal para reels, historias, lanzamientos y campañas visuales.</p>
+      </article>
+
+      <article class="collab-card">
+        <span>🎨</span>
+        <h3>Diseño</h3>
+        <p>Logo, identidad visual, piezas gráficas, packaging y más.</p>
+      </article>
+
+      <article class="collab-card">
+        <span>📱</span>
+        <h3>Community Manager</h3>
+        <p>Apoyo para redes, contenido, estrategia y organización digital.</p>
+      </article>
+
+      <article class="collab-card">
+        <span>🛍️</span>
+        <h3>Marcas y tiendas</h3>
+        <p>Espacio para colaboraciones, packs, sorteos o acciones cruzadas.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="resources-section" id="recursos">
+    <div class="section-head center">
+      <p class="kicker">Gratis</p>
+      <h2>Recursos para crecer</h2>
+      <p>Valor real para cualquier persona, incluso aunque todavía no publique.</p>
+    </div>
+
+    <div class="resources-grid">
+      <article class="resource-card">
+        <h3>Plantillas</h3>
+        <p>Ideas simples para posteos, historias, promociones y lanzamientos.</p>
+      </article>
+
+      <article class="resource-card">
+        <h3>Tips para vender</h3>
+        <p>Consejos prácticos para comunicar mejor y cerrar más ventas.</p>
+      </article>
+
+      <article class="resource-card">
+        <h3>Ideas de contenido</h3>
+        <p>Inspiración para redes sociales sin quedarte sin ideas.</p>
+      </article>
+
+      <article class="resource-card">
+        <h3>Checklist para emprender</h3>
+        <p>Una guía rápida con puntos clave para ordenar tu marca.</p>
+      </article>
+
+      <article class="resource-card">
+        <h3>Guía para Instagram</h3>
+        <p>Mejorá tu perfil, bio, publicaciones y estética visual.</p>
+      </article>
+
+      <article class="resource-card">
+        <h3>Recursos gratis</h3>
+        <p>Sección pensada para que tu página también aporte valor educativo.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="layout-wrapper">
+    <div class="layout">
+
+      <aside class="sidebar">
+        <div class="sidebar-block">
+          <h3>Buscar</h3>
+          <input type="text" id="searchInput" placeholder="Buscar por nombre, rubro o zona" />
+        </div>
+
+        <div class="sidebar-block">
+          <h4>Filtrar por rubro</h4>
+          <select id="categoryFilter">
+            <option value="all">Todos</option>
+          </select>
+        </div>
+
+        <div class="sidebar-block">
+          <h4>Necesidades</h4>
+          <div class="chips">
+            <button class="chip active-chip" data-help="all" type="button">Todos</button>
+            <button class="chip" data-help="Difusión" type="button">Difusión</button>
+            <button class="chip" data-help="Clientes" type="button">Clientes</button>
+            <button class="chip" data-help="Colaboraciones" type="button">Colaboraciones</button>
+            <button class="chip" data-help="Proveedor" type="button">Proveedor</button>
+            <button class="chip" data-help="Ayuda general" type="button">Ayuda general</button>
+          </div>
+        </div>
+
+        <div class="stats-box">
+          <div class="stat-item">
+            <span>Total</span>
+            <strong id="statTotal">0</strong>
+          </div>
+          <div class="stat-item">
+            <span>Rubros</span>
+            <strong id="statCategories">0</strong>
+          </div>
+          <div class="stat-item">
+            <span>Comentarios</span>
+            <strong id="statComments">0</strong>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <section class="form" id="sumate">
+          <div class="form-head">
+            <p class="kicker">Publicá tu emprendimiento</p>
+            <h2>Sumate a Red Emprende</h2>
+            <p class="section-text">
+              Completá tus datos y mostrá qué hacés, qué necesitás y cómo puede ayudarte la comunidad.
+            </p>
+          </div>
+
+          <div class="grid">
+            <input type="text" id="name" placeholder="Tu nombre" />
+            <input type="text" id="brand" placeholder="Nombre del emprendimiento" />
+          </div>
+
+          <div class="grid">
+            <input type="text" id="category" placeholder="Rubro" />
+            <input type="text" id="location" placeholder="Zona o localidad" />
+          </div>
+
+          <div class="grid">
+            <input type="text" id="alias" placeholder="Alias para ayudar / cobrar" />
+            <input type="text" id="whatsapp" placeholder="WhatsApp" />
+          </div>
+
+          <div class="grid">
+            <input type="text" id="instagram" placeholder="Instagram" />
+            <input type="text" id="facebook" placeholder="Facebook" />
+          </div>
+
+          <div class="grid">
+            <input type="text" id="tiktok" placeholder="TikTok" />
+            <input type="text" id="website" placeholder="Página web" />
+          </div>
+
+          <div class="uploads">
+            <label class="upload">
+              <span>Foto principal</span>
+              <input type="file" id="photoFile" accept="image/*" />
+              <small>Ningún archivo seleccionado</small>
+            </label>
+
+            <label class="upload">
+              <span>Foto 1</span>
+              <input type="file" id="galleryFile1" accept="image/*" />
+              <small>Ningún archivo seleccionado</small>
+            </label>
+
+            <label class="upload">
+              <span>Foto 2</span>
+              <input type="file" id="galleryFile2" accept="image/*" />
+              <small>Ningún archivo seleccionado</small>
+            </label>
+
+            <label class="upload full">
+              <span>Foto 3</span>
+              <input type="file" id="galleryFile3" accept="image/*" />
+              <small>Ningún archivo seleccionado</small>
+            </label>
+          </div>
+
+          <textarea id="services" placeholder="¿Qué hacés? Contá brevemente tu emprendimiento"></textarea>
+          <textarea id="story" placeholder="Contá tu historia"></textarea>
+          <textarea id="helpText" placeholder="¿Cómo puede ayudarte la comunidad?"></textarea>
+
+          <div class="grid">
+            <select id="help">
+              <option value="">¿Qué necesitás?</option>
+              <option value="Difusión">Difusión</option>
+              <option value="Clientes">Clientes</option>
+              <option value="Colaboraciones">Colaboraciones</option>
+              <option value="Proveedor">Proveedor</option>
+              <option value="Ayuda general">Ayuda general</option>
+            </select>
+
+            <select id="shipping">
+              <option value="">¿Hacés envíos?</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <button class="btn" id="publishBtn" type="button">Publicar emprendimiento</button>
+        </section>
+
+        <section class="red" id="red">
+          <div class="red-header">
+            <div>
+              <p class="kicker">RED ACTIVA</p>
+              <h2>Emprendedores publicados</h2>
+            </div>
+            <span class="badge"><span id="resultsCount">0</span> perfiles</span>
+          </div>
+
+          <div id="entrepreneursList"></div>
+        </section>
+      </main>
+    </div>
+  </section>
+
+  <div class="plan-modal" id="planModal">
+    <div class="plan-modal-box">
+      <button class="plan-modal-close" type="button" onclick="closePlanModal()">✕</button>
+
+      <p class="kicker">Contratar plan</p>
+      <h3 id="modalPlanName">Plan</h3>
+
+      <div class="modal-price">
+        <strong id="modalPlanPrice">$0</strong>
+        <span id="modalPlanPeriod"></span>
+      </div>
+
+      <p class="modal-text">
+        Para reservar este espacio, podés transferir al alias y después escribirme por WhatsApp así coordinamos todo.
+      </p>
+
+      <div class="modal-pay-box">
+        <span>Alias Mercado Pago</span>
+
+        <div class="modal-alias-row">
+          <strong id="mpAliasText">webmic.mp</strong>
+          <button class="copy-btn" type="button" onclick="copyPaymentAlias()">Copiar</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="see-alias-btn" type="button" onclick="toggleModalAlias()">Ver alias</button>
+
+        <a
+          class="modal-wa-btn"
+          id="modalWhatsappBtn"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Escribirme por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <div class="image-modal" id="imageModal">
+  <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
+
+  <div class="image-modal-content">
+    <button class="image-modal-close" type="button" onclick="closeImageModal()">✕</button>
+    <img id="imageModalImg" src="" alt="Imagen ampliada del emprendimiento" />
+  </div>
+</div>
+</body>
+</html>
