@@ -29,6 +29,7 @@ const mpAliasText = document.getElementById("mpAliasText");
 
 const myWhatsapp = "5491127887082";
 const myMercadoPagoAlias = "webmic.mp";
+const STORAGE_KEY = "redEmprendeEntrepreneurs";
 
 const fallbackPhoto =
   "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80";
@@ -69,11 +70,11 @@ const initialEntrepreneurs = [
     facebook: "",
     tiktok: "",
     website: "",
-    photo: "assets/3.png",
+    photo: "assets/webmic/portada.jpg",
     gallery: [
-      "assets/5.jpeg",
-      "assets/6.jpeg",
-      "assets/7.jpeg"
+      "assets/webmic/foto1.jpg",
+      "assets/webmic/foto2.jpg",
+      "assets/webmic/foto3.jpg"
     ],
     services: "Páginas web, tiendas online, diseño visual, contenido y presencia digital para marcas y emprendedores.",
     story: "WebMic nace para ayudar a emprendedores a verse más profesionales en internet. La idea es crear páginas y presencia digital que vendan, conecten y hagan crecer marcas reales.",
@@ -85,9 +86,33 @@ const initialEntrepreneurs = [
   }
 ];
 
-let entrepreneurs = [...initialEntrepreneurs];
+/* =========================
+   STORAGE
+========================= */
+function loadEntrepreneurs() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (error) {
+      console.error("Error leyendo emprendedores guardados:", error);
+    }
+  }
+
+  return [...initialEntrepreneurs];
+}
+
+function saveEntrepreneurs() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entrepreneurs));
+}
+
+let entrepreneurs = loadEntrepreneurs();
 let selectedHelp = "all";
 
+/* =========================
+   HELPERS
+========================= */
 function normalize(value) {
   return (value || "").toLowerCase().trim();
 }
@@ -141,6 +166,9 @@ function buildWhatsappUrl(value) {
   return `https://wa.me/${onlyNumbers}`;
 }
 
+/* =========================
+   RENDER
+========================= */
 function renderSocialButtons(e) {
   const items = [];
 
@@ -349,6 +377,27 @@ function renderHelpBoard() {
   `).join("");
 }
 
+function renderList(items) {
+  if (!list) return;
+  list.innerHTML = items.map(cardTemplate).join("");
+  if (resultsCount) resultsCount.textContent = items.length;
+}
+
+function updateStats(items = entrepreneurs) {
+  const total = entrepreneurs.length;
+  const categories = uniqueCategories().length || 0;
+  const comments = totalCommentsCount();
+
+  if (statTotal) statTotal.textContent = total;
+  if (statCategories) statCategories.textContent = categories;
+  if (statComments) statComments.textContent = comments;
+  if (resultsCount) resultsCount.textContent = items.length;
+
+  if (heroTotal) heroTotal.textContent = total;
+  if (heroCategories) heroCategories.textContent = categories;
+  if (heroComments) heroComments.textContent = comments;
+}
+
 function applyFilters() {
   const search = normalize(searchInput?.value || "");
   const category = categoryFilter?.value || "all";
@@ -372,27 +421,9 @@ function applyFilters() {
   updateStats(filtered);
 }
 
-function renderList(items) {
-  if (!list) return;
-  list.innerHTML = items.map(cardTemplate).join("");
-  if (resultsCount) resultsCount.textContent = items.length;
-}
-
-function updateStats(items = entrepreneurs) {
-  const total = entrepreneurs.length;
-  const categories = uniqueCategories().length || 0;
-  const comments = totalCommentsCount();
-
-  if (statTotal) statTotal.textContent = total;
-  if (statCategories) statCategories.textContent = categories;
-  if (statComments) statComments.textContent = comments;
-  if (resultsCount) resultsCount.textContent = items.length;
-
-  if (heroTotal) heroTotal.textContent = total;
-  if (heroCategories) heroCategories.textContent = categories;
-  if (heroComments) heroComments.textContent = comments;
-}
-
+/* =========================
+   FILES / FORM
+========================= */
 function fileToDataURL(file) {
   return new Promise((resolve, reject) => {
     if (!file) {
@@ -446,6 +477,7 @@ async function addEntrepreneur() {
   }
 
   entrepreneurs.unshift(data);
+  saveEntrepreneurs();
   fillCategoryFilter();
   clearForm();
   applyFilters();
@@ -471,6 +503,9 @@ function clearForm() {
   });
 }
 
+/* =========================
+   COMMENTS / MESSAGES
+========================= */
 function addComment(id) {
   const entrepreneur = entrepreneurs.find(item => item.id === id);
   if (!entrepreneur) return;
@@ -487,6 +522,7 @@ function addComment(id) {
   }
 
   entrepreneur.comments.unshift({ author, text });
+  saveEntrepreneurs();
   applyFilters();
 }
 
@@ -506,6 +542,7 @@ function addMessage(id) {
   }
 
   entrepreneur.messages.unshift({ author, text });
+  saveEntrepreneurs();
   applyFilters();
 }
 
@@ -515,6 +552,9 @@ function toggleExpand(id) {
   block.classList.toggle("open");
 }
 
+/* =========================
+   FILTERS
+========================= */
 function activateHelpFilter(helpValue) {
   const redSection = document.querySelector("#red");
   selectedHelp = helpValue;
@@ -530,6 +570,9 @@ function activateHelpFilter(helpValue) {
   }
 }
 
+/* =========================
+   ALIAS
+========================= */
 function copyAlias(id) {
   const aliasElement = document.getElementById(`alias-${id}`);
   if (!aliasElement) return;
@@ -551,6 +594,9 @@ function showAliasOnly(id) {
   alert("Alias: " + text);
 }
 
+/* =========================
+   PLAN MODAL
+========================= */
 function openPlanModal(planName, price, period) {
   if (!planModal) return;
 
@@ -587,6 +633,42 @@ function copyPaymentAlias() {
   });
 }
 
+/* =========================
+   IMAGE MODAL
+========================= */
+function openImageModal(src) {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("imageModalImg");
+
+  if (!modal || !modalImg) return;
+
+  modalImg.src = src;
+  modal.classList.add("open");
+}
+
+function closeImageModal() {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("imageModalImg");
+
+  if (!modal || !modalImg) return;
+
+  modal.classList.remove("open");
+  modalImg.src = "";
+}
+
+/* =========================
+   OPTIONAL RESET
+========================= */
+function resetEntrepreneurs() {
+  localStorage.removeItem(STORAGE_KEY);
+  entrepreneurs = [...initialEntrepreneurs];
+  fillCategoryFilter();
+  applyFilters();
+}
+
+/* =========================
+   EVENTS
+========================= */
 if (publishBtn) {
   publishBtn.addEventListener("click", addEntrepreneur);
 }
@@ -655,36 +737,25 @@ if (planModal) {
       closePlanModal();
     }
   });
-function openImageModal(src) {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("imageModalImg");
-
-  if (!modal || !modalImg) return;
-
-  modalImg.src = src;
-  modal.classList.add("open");
 }
 
-function closeImageModal() {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("imageModalImg");
-
-  if (!modal || !modalImg) return;
-
-  modal.classList.remove("open");
-  modalImg.src = "";
-}
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
+    closePlanModal();
     closeImageModal();
   }
 });
-}
 
+/* =========================
+   INIT
+========================= */
 fillCategoryFilter();
 renderHelpBoard();
 applyFilters();
 
+/* =========================
+   GLOBALS
+========================= */
 window.addComment = addComment;
 window.addMessage = addMessage;
 window.toggleExpand = toggleExpand;
@@ -696,3 +767,4 @@ window.toggleModalAlias = toggleModalAlias;
 window.copyPaymentAlias = copyPaymentAlias;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
+window.resetEntrepreneurs = resetEntrepreneurs;
