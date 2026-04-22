@@ -89,22 +89,56 @@ const initialEntrepreneurs = [
 /* =========================
    STORAGE
 ========================= */
+function normalizeLoadedEntrepreneur(item) {
+  return {
+    id: item.id || crypto.randomUUID(),
+    name: item.name || "",
+    brand: item.brand || "",
+    category: item.category || "",
+    location: item.location || "",
+    alias: item.alias || "",
+    whatsapp: item.whatsapp || "",
+    instagram: item.instagram || "",
+    facebook: item.facebook || "",
+    tiktok: item.tiktok || "",
+    website: item.website || "",
+    photo: item.photo || fallbackPhoto,
+    gallery: Array.isArray(item.gallery) ? item.gallery.filter(Boolean) : [],
+    services: item.services || "",
+    story: item.story || "",
+    help: item.help || "",
+    helpText: item.helpText || "",
+    shipping: item.shipping || "",
+    comments: Array.isArray(item.comments) ? item.comments : [],
+    messages: Array.isArray(item.messages) ? item.messages : []
+  };
+}
+
 function loadEntrepreneurs() {
   const saved = localStorage.getItem(STORAGE_KEY);
 
   if (saved) {
     try {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+
+      if (Array.isArray(parsed)) {
+        return parsed.map(normalizeLoadedEntrepreneur);
+      }
     } catch (error) {
       console.error("Error leyendo emprendedores guardados:", error);
     }
   }
 
-  return [...initialEntrepreneurs];
+  return initialEntrepreneurs.map(normalizeLoadedEntrepreneur);
 }
 
 function saveEntrepreneurs() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entrepreneurs));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entrepreneurs));
+  } catch (error) {
+    console.error("Error guardando emprendedores:", error);
+    alert("No se pudo guardar la información en este navegador.");
+  }
 }
 
 let entrepreneurs = loadEntrepreneurs();
@@ -249,7 +283,7 @@ function renderGallery(images = []) {
 }
 
 function cardTemplate(e) {
-  const slug = e.brand.toLowerCase().replace(/\s+/g, "-");
+  const slug = (e.brand || "emprendimiento").toLowerCase().replace(/\s+/g, "-");
 
   return `
     <article class="entrepreneur-card" id="${slug}">
@@ -448,7 +482,7 @@ async function addEntrepreneur() {
   const gallery2 = await fileToDataURL(galleryFile2);
   const gallery3 = await fileToDataURL(galleryFile3);
 
-  const data = {
+  const data = normalizeLoadedEntrepreneur({
     id: crypto.randomUUID(),
     name: document.getElementById("name")?.value.trim() || "",
     brand: document.getElementById("brand")?.value.trim() || "",
@@ -469,7 +503,7 @@ async function addEntrepreneur() {
     shipping: document.getElementById("shipping")?.value || "",
     comments: [],
     messages: []
-  };
+  });
 
   if (!data.name || !data.brand || !data.category) {
     alert("Completá al menos nombre, emprendimiento y rubro.");
@@ -661,7 +695,7 @@ function closeImageModal() {
 ========================= */
 function resetEntrepreneurs() {
   localStorage.removeItem(STORAGE_KEY);
-  entrepreneurs = [...initialEntrepreneurs];
+  entrepreneurs = initialEntrepreneurs.map(normalizeLoadedEntrepreneur);
   fillCategoryFilter();
   applyFilters();
 }
@@ -693,10 +727,10 @@ helpChips.forEach(chip => {
 document.querySelectorAll('.upload input[type="file"]').forEach((input) => {
   input.addEventListener('change', () => {
     const small = input.parentElement.querySelector('small');
-    if (input.files.length > 0) {
-      small.textContent = input.files[0].name;
-    } else {
-      small.textContent = 'Ningún archivo seleccionado';
+    if (small) {
+      small.textContent = input.files.length > 0
+        ? input.files[0].name
+        : 'Ningún archivo seleccionado';
     }
   });
 });
