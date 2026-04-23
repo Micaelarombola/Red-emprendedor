@@ -771,4 +771,6 @@
   window.copyPaymentAlias = copyPaymentAlias;
   window.openImageModal = openImageModal;
   window.closeImageModal = closeImageModal;
+
+  console.log("update supabase fix");
 })();
