@@ -313,8 +313,7 @@ function cardTemplate(e) {
               <strong>Alias:</strong> ${e.alias || "No cargado"}<br />
               <strong>WhatsApp:</strong> ${e.whatsapp || "No cargado"}<br />
               <strong>Necesita:</strong> ${e.help || "No especificado"}<br />
-              <strong>Cómo ayudar:</strong> ${e.helpText || "Podés apoyarlo compartiendo, recomendando o comprando."}
-            </div>
+<strong>Cómo ayudar:</strong> ${e.helpText || e.help_text || "Podés apoyarlo compartiendo, recomendando o comprando."}            </div>
 
             <div class="story-box">
               <strong>Historia:</strong><br />
@@ -416,62 +415,132 @@ function updateStats(items = entrepreneurs) {
   if (heroComments) heroComments.textContent = comments;
 }
 
-function fileToDataURL(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+
+
+async function uploadImage(file, folder = "uploads") {
+  if (!file) return "";
+
+  const safeName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name.replace(/\s+/g, "-")}`;
+  const filePath = `${folder}/${safeName}`;
+
+  const { error: uploadError } = await supabaseClient
+    .storage
+    .from("entrepreneurs")
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type
+    });
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  const { data } = supabaseClient
+    .storage
+    .from("entrepreneurs")
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
 }
 
-async function addEntrepreneur() {
-  const photoFile = document.getElementById("photoFile")?.files?.[0] || null;
-  const galleryFile1 = document.getElementById("galleryFile1")?.files?.[0] || null;
-  const galleryFile2 = document.getElementById("galleryFile2")?.files?.[0] || null;
-  const galleryFile3 = document.getElementById("galleryFile3")?.files?.[0] || null;
+async function loadEntrepreneurs() {
+  const { data, error } = await supabaseClient
+    .from("entrepreneurs")
+    .select("*")
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
 
-  const photo = await fileToDataURL(photoFile);
-  const gallery1 = await fileToDataURL(galleryFile1);
-  const gallery2 = await fileToDataURL(galleryFile2);
-  const gallery3 = await fileToDataURL(galleryFile3);
-
-  const data = {
-    id: crypto.randomUUID(),
-    name: document.getElementById("name")?.value.trim() || "",
-    brand: document.getElementById("brand")?.value.trim() || "",
-    category: document.getElementById("category")?.value.trim() || "",
-    location: document.getElementById("location")?.value.trim() || "",
-    alias: document.getElementById("alias")?.value.trim() || "",
-    whatsapp: document.getElementById("whatsapp")?.value.trim() || "",
-    instagram: document.getElementById("instagram")?.value.trim() || "",
-    facebook: document.getElementById("facebook")?.value.trim() || "",
-    tiktok: document.getElementById("tiktok")?.value.trim() || "",
-    website: document.getElementById("website")?.value.trim() || "",
-    photo: photo || fallbackPhoto,
-    gallery: [gallery1, gallery2, gallery3].filter(Boolean),
-    services: document.getElementById("services")?.value.trim() || "",
-    story: document.getElementById("story")?.value.trim() || "",
-    helpText: document.getElementById("helpText")?.value.trim() || "",
-    help: document.getElementById("help")?.value || "",
-    shipping: document.getElementById("shipping")?.value || "",
-    comments: [],
-    messages: []
-  };
-
-  if (!data.name || !data.brand || !data.category) {
-    alert("Completá al menos nombre, emprendimiento y rubro.");
+  if (error) {
+    console.error("Error cargando emprendimientos:", error);
     return;
   }
 
-  entrepreneurs.unshift(data);
+  entrepreneurs = [
+    ...initialEntrepreneurs,
+    ...(data || []).map(item => ({
+      ...item,
+      helpText: item.help_text || item.helpText || "",
+      comments: item.comments || [],
+      messages: item.messages || []
+    }))
+  ];
+
   fillCategoryFilter();
-  clearForm();
   applyFilters();
+}
+
+async function addEntrepreneur() {
+  try {
+    const photoFile = document.getElementById("photoFile")?.files?.[0] || null;
+    const galleryFile1 = document.getElementById("galleryFile1")?.files?.[0] || null;
+    const galleryFile2 = document.getElementById("galleryFile2")?.files?.[0] || null;
+    const galleryFile3 = document.getElementById("galleryFile3")?.files?.[0] || null;
+
+    const data = {
+      name: document.getElementById("name")?.value.trim() || "",
+      brand: document.getElementById("brand")?.value.trim() || "",
+      category: document.getElementById("category")?.value.trim() || "",
+      location: document.getElementById("location")?.value.trim() || "",
+      alias: document.getElementById("alias")?.value.trim() || "",
+      whatsapp: document.getElementById("whatsapp")?.value.trim() || "",
+      instagram: document.getElementById("instagram")?.value.trim() || "",
+      facebook: document.getElementById("facebook")?.value.trim() || "",
+      tiktok: document.getElementById("tiktok")?.value.trim() || "",
+      website: document.getElementById("website")?.value.trim() || "",
+      services: document.getElementById("services")?.value.trim() || "",
+      story: document.getElementById("story")?.value.trim() || "",
+      help_text: document.getElementById("helpText")?.value.trim() || "",
+      help: document.getElementById("help")?.value || "",
+      shipping: document.getElementById("shipping")?.value || "",
+      approved: true
+    };
+
+    if (!data.name || !data.brand || !data.category) {
+      alert("Completá al menos nombre, emprendimiento y rubro.");
+      return;
+    }
+
+    if (publishBtn) {
+      publishBtn.disabled = true;
+      publishBtn.textContent = "Publicando...";
+    }
+
+    const photoUrl = photoFile ? await uploadImage(photoFile, "main") : fallbackPhoto;
+
+    const galleryUrls = [];
+    if (galleryFile1) galleryUrls.push(await uploadImage(galleryFile1, "gallery"));
+    if (galleryFile2) galleryUrls.push(await uploadImage(galleryFile2, "gallery"));
+    if (galleryFile3) galleryUrls.push(await uploadImage(galleryFile3, "gallery"));
+
+    const payload = {
+      ...data,
+      photo: photoUrl,
+      gallery: galleryUrls
+    };
+
+    const { error } = await supabaseClient
+      .from("entrepreneurs")
+      .insert([payload]);
+
+    if (error) {
+      console.error("Error insertando:", error);
+      alert("Hubo un error al guardar en Supabase.");
+      return;
+    }
+
+    clearForm();
+    await loadEntrepreneurs();
+    alert("¡Emprendimiento publicado con éxito!");
+  } catch (error) {
+    console.error("Error general:", error);
+    alert("No se pudo publicar.");
+  } finally {
+    if (publishBtn) {
+      publishBtn.disabled = false;
+      publishBtn.textContent = "Publicar emprendimiento";
+    }
+  }
 }
 
 function clearForm() {
@@ -685,9 +754,8 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-fillCategoryFilter();
 renderHelpBoard();
-applyFilters();
+loadEntrepreneurs();
 
 window.addComment = addComment;
 window.addMessage = addMessage;
