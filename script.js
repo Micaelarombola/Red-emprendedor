@@ -5,7 +5,7 @@
   // =========================
   // SUPABASE CONFIG
   // =========================
-  const SUPABASE_URL = "https://nbfokxmiukvxvcemeegz.supabase.co";
+  const SUPABASE_URL = "https://nbfokxmiukvxycemeegz.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_y8V67zqJMhMktE9xoyIgOQ_T3f63VNb";
 
   const supabase =
