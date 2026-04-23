@@ -1,3 +1,8 @@
+const SUPABASE_URL = "https://nbfokxmiukvxvcemeegz.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_y8V67zqJMhMktE9xoyIgOQ_T3f63VNb";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const list = document.getElementById("entrepreneursList");
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
@@ -34,7 +39,66 @@ const STORAGE_KEY = "redEmprendeEntrepreneurs";
 const fallbackPhoto =
   "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80";
 
-const communityNeeds = [
+async function uploadImage(file, folder = "main") {
+  if (!file) return "";
+
+  const extension = file.name.split(".").pop();
+  const fileName = `${folder}/${crypto.randomUUID()}.${extension}`;
+
+  const { data, error } = await supabase
+    .storage
+    .from("entrepreneurs")
+    .upload(fileName, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type
+    });
+
+  if (error) throw error;
+
+  const { data: publicData } = supabase
+    .storage
+    .from("entrepreneurs")
+    .getPublicUrl(data.path);
+
+  return publicData.publicUrl;
+}
+
+async function loadEntrepreneursFromSupabase() {
+  const { data, error } = await supabase
+    .from("entrepreneurs")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error cargando emprendimientos:", error);
+    return [];
+  }
+
+  return data.map(item => ({
+    id: item.id,
+    name: item.name || "",
+    brand: item.brand || "",
+    category: item.category || "",
+    location: item.location || "",
+    alias: item.alias || "",
+    whatsapp: item.whatsapp || "",
+    instagram: item.instagram || "",
+    facebook: item.facebook || "",
+    tiktok: item.tiktok || "",
+    website: item.website || "",
+    photo: item.photo_url || fallbackPhoto,
+    gallery: Array.isArray(item.gallery_urls) ? item.gallery_urls : [],
+    services: item.services || "",
+    story: item.story || "",
+    help: item.help || "",
+    helpText: item.help_text || "",
+    shipping: item.shipping || "",
+    comments: [],
+    messages: []
+  }));
+}
+  const communityNeeds = [
   {
     type: "Diseño",
     title: "Busco diseñador para logo",
@@ -91,26 +155,26 @@ const initialEntrepreneurs = [
 ========================= */
 function normalizeLoadedEntrepreneur(item) {
   return {
-    id: item.id || crypto.randomUUID(),
-    name: item.name || "",
-    brand: item.brand || "",
-    category: item.category || "",
-    location: item.location || "",
-    alias: item.alias || "",
-    whatsapp: item.whatsapp || "",
-    instagram: item.instagram || "",
-    facebook: item.facebook || "",
-    tiktok: item.tiktok || "",
-    website: item.website || "",
-    photo: item.photo || fallbackPhoto,
-    gallery: Array.isArray(item.gallery) ? item.gallery.filter(Boolean) : [],
-    services: item.services || "",
-    story: item.story || "",
-    help: item.help || "",
-    helpText: item.helpText || "",
-    shipping: item.shipping || "",
-    comments: Array.isArray(item.comments) ? item.comments : [],
-    messages: Array.isArray(item.messages) ? item.messages : []
+    id: item?.id || crypto.randomUUID(),
+    name: item?.name || "",
+    brand: item?.brand || "",
+    category: item?.category || "",
+    location: item?.location || "",
+    alias: item?.alias || "",
+    whatsapp: item?.whatsapp || "",
+    instagram: item?.instagram || "",
+    facebook: item?.facebook || "",
+    tiktok: item?.tiktok || "",
+    website: item?.website || "",
+    photo: item?.photo || fallbackPhoto,
+    gallery: Array.isArray(item?.gallery) ? item.gallery.filter(Boolean) : [],
+    services: item?.services || "",
+    story: item?.story || "",
+    help: item?.help || "",
+    helpText: item?.helpText || "",
+    shipping: item?.shipping || "",
+    comments: Array.isArray(item?.comments) ? item.comments : [],
+    messages: Array.isArray(item?.messages) ? item.messages : []
   };
 }
 
@@ -120,7 +184,6 @@ function loadEntrepreneurs() {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-
       if (Array.isArray(parsed)) {
         return parsed.map(normalizeLoadedEntrepreneur);
       }
@@ -137,11 +200,11 @@ function saveEntrepreneurs() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entrepreneurs));
   } catch (error) {
     console.error("Error guardando emprendedores:", error);
-    alert("No se pudo guardar la información en este navegador.");
+    alert("No se pudo guardar porque las imágenes ocupan demasiado espacio. Probá publicar sin fotos.");
   }
 }
 
-let entrepreneurs = loadEntrepreneurs();
+let entrepreneurs = [];
 let selectedHelp = "all";
 
 /* =========================
@@ -456,67 +519,8 @@ function applyFilters() {
 }
 
 /* =========================
-   FILES / FORM
+   FORM
 ========================= */
-function fileToDataURL(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function addEntrepreneur() {
-  const photoFile = document.getElementById("photoFile")?.files?.[0] || null;
-  const galleryFile1 = document.getElementById("galleryFile1")?.files?.[0] || null;
-  const galleryFile2 = document.getElementById("galleryFile2")?.files?.[0] || null;
-  const galleryFile3 = document.getElementById("galleryFile3")?.files?.[0] || null;
-
-  const photo = await fileToDataURL(photoFile);
-  const gallery1 = await fileToDataURL(galleryFile1);
-  const gallery2 = await fileToDataURL(galleryFile2);
-  const gallery3 = await fileToDataURL(galleryFile3);
-
-  const data = normalizeLoadedEntrepreneur({
-    id: crypto.randomUUID(),
-    name: document.getElementById("name")?.value.trim() || "",
-    brand: document.getElementById("brand")?.value.trim() || "",
-    category: document.getElementById("category")?.value.trim() || "",
-    location: document.getElementById("location")?.value.trim() || "",
-    alias: document.getElementById("alias")?.value.trim() || "",
-    whatsapp: document.getElementById("whatsapp")?.value.trim() || "",
-    instagram: document.getElementById("instagram")?.value.trim() || "",
-    facebook: document.getElementById("facebook")?.value.trim() || "",
-    tiktok: document.getElementById("tiktok")?.value.trim() || "",
-    website: document.getElementById("website")?.value.trim() || "",
-    photo: photo || fallbackPhoto,
-    gallery: [gallery1, gallery2, gallery3].filter(Boolean),
-    services: document.getElementById("services")?.value.trim() || "",
-    story: document.getElementById("story")?.value.trim() || "",
-    helpText: document.getElementById("helpText")?.value.trim() || "",
-    help: document.getElementById("help")?.value || "",
-    shipping: document.getElementById("shipping")?.value || "",
-    comments: [],
-    messages: []
-  });
-
-  if (!data.name || !data.brand || !data.category) {
-    alert("Completá al menos nombre, emprendimiento y rubro.");
-    return;
-  }
-
-  entrepreneurs.unshift(data);
-  saveEntrepreneurs();
-  fillCategoryFilter();
-  clearForm();
-  applyFilters();
-}
-
 function clearForm() {
   [
     "name", "brand", "category", "location", "alias", "whatsapp",
@@ -535,6 +539,94 @@ function clearForm() {
   document.querySelectorAll(".upload small").forEach((small) => {
     small.textContent = "Ningún archivo seleccionado";
   });
+}
+
+async function addEntrepreneur() {
+  try {
+    const photoFile = document.getElementById("photoFile")?.files?.[0] || null;
+    const galleryFile1 = document.getElementById("galleryFile1")?.files?.[0] || null;
+    const galleryFile2 = document.getElementById("galleryFile2")?.files?.[0] || null;
+    const galleryFile3 = document.getElementById("galleryFile3")?.files?.[0] || null;
+
+    const name = document.getElementById("name")?.value.trim() || "";
+    const brand = document.getElementById("brand")?.value.trim() || "";
+    const category = document.getElementById("category")?.value.trim() || "";
+
+    if (!name || !brand || !category) {
+      alert("Completá al menos nombre, emprendimiento y rubro.");
+      return;
+    }
+
+    const photoUrl = photoFile
+      ? await uploadImage(photoFile, "main")
+      : fallbackPhoto;
+
+    const galleryUrls = [];
+    if (galleryFile1) galleryUrls.push(await uploadImage(galleryFile1, "gallery"));
+    if (galleryFile2) galleryUrls.push(await uploadImage(galleryFile2, "gallery"));
+    if (galleryFile3) galleryUrls.push(await uploadImage(galleryFile3, "gallery"));
+
+    const payload = {
+      name,
+      brand,
+      category,
+      location: document.getElementById("location")?.value.trim() || "",
+      alias: document.getElementById("alias")?.value.trim() || "",
+      whatsapp: document.getElementById("whatsapp")?.value.trim() || "",
+      instagram: document.getElementById("instagram")?.value.trim() || "",
+      facebook: document.getElementById("facebook")?.value.trim() || "",
+      tiktok: document.getElementById("tiktok")?.value.trim() || "",
+      website: document.getElementById("website")?.value.trim() || "",
+      photo_url: photoUrl,
+      gallery_urls: galleryUrls,
+      services: document.getElementById("services")?.value.trim() || "",
+      story: document.getElementById("story")?.value.trim() || "",
+      help: document.getElementById("help")?.value || "",
+      help_text: document.getElementById("helpText")?.value.trim() || "",
+      shipping: document.getElementById("shipping")?.value || ""
+    };
+
+    const { data, error } = await supabase
+      .from("entrepreneurs")
+      .insert([payload])
+      .select();
+
+    if (error) throw error;
+
+    const saved = data[0];
+
+    entrepreneurs.unshift({
+      id: saved.id,
+      name: saved.name || "",
+      brand: saved.brand || "",
+      category: saved.category || "",
+      location: saved.location || "",
+      alias: saved.alias || "",
+      whatsapp: saved.whatsapp || "",
+      instagram: saved.instagram || "",
+      facebook: saved.facebook || "",
+      tiktok: saved.tiktok || "",
+      website: saved.website || "",
+      photo: saved.photo_url || fallbackPhoto,
+      gallery: Array.isArray(saved.gallery_urls) ? saved.gallery_urls : [],
+      services: saved.services || "",
+      story: saved.story || "",
+      help: saved.help || "",
+      helpText: saved.help_text || "",
+      shipping: saved.shipping || "",
+      comments: [],
+      messages: []
+    });
+
+    fillCategoryFilter();
+    clearForm();
+    applyFilters();
+
+    alert("Emprendimiento publicado con éxito");
+  } catch (error) {
+    console.error("Error publicando:", error);
+    alert("Hubo un error al publicar el emprendimiento.");
+  }
 }
 
 /* =========================
@@ -691,7 +783,7 @@ function closeImageModal() {
 }
 
 /* =========================
-   OPTIONAL RESET
+   RESET
 ========================= */
 function resetEntrepreneurs() {
   localStorage.removeItem(STORAGE_KEY);
@@ -783,10 +875,14 @@ document.addEventListener("keydown", (e) => {
 /* =========================
    INIT
 ========================= */
-fillCategoryFilter();
-renderHelpBoard();
-applyFilters();
+async function initApp() {
+  entrepreneurs = await loadEntrepreneursFromSupabase();
+  fillCategoryFilter();
+  renderHelpBoard();
+  applyFilters();
+}
 
+initApp();
 /* =========================
    GLOBALS
 ========================= */
