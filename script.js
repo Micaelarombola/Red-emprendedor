@@ -1,8 +1,7 @@
 const SUPABASE_URL = "https://ltcoeivvcrkgtkprqzb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_2CNWKNbS0O2ydd3DNq3_Rw_8XfoWCwD";
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const list = document.getElementById("entrepreneursList");
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
@@ -423,7 +422,8 @@ async function uploadImage(file, folder = "uploads") {
   const safeName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name.replace(/\s+/g, "-")}`;
   const filePath = `${folder}/${safeName}`;
 
-  const { error: uploadError } = await supabaseClient
+  const { error: uploadError } = await supabase
+
     .storage
     .from("entrepreneurs")
     .upload(filePath, file, {
@@ -436,7 +436,7 @@ async function uploadImage(file, folder = "uploads") {
     throw uploadError;
   }
 
-  const { data } = supabaseClient
+  const { data } = supabase
     .storage
     .from("entrepreneurs")
     .getPublicUrl(filePath);
@@ -445,7 +445,7 @@ async function uploadImage(file, folder = "uploads") {
 }
 
 async function loadEntrepreneurs() {
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from("entrepreneurs")
     .select("*")
     .eq("approved", true)
@@ -519,7 +519,7 @@ async function addEntrepreneur() {
       gallery: galleryUrls
     };
 
-    const { error } = await supabaseClient
+    const { error } = await supabase
       .from("entrepreneurs")
       .insert([payload]);
 
