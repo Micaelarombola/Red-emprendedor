@@ -1478,3 +1478,45 @@ textarea{
 .image-modal-close:hover{
   background:rgba(255,255,255,.2);
 }
+select {
+  color: #ffffff;
+  background: rgba(255,255,255,.04);
+}
+
+select option {
+  background: #141827;
+  color: #ffffff;
+}
+select option[value=""] {
+  color: #b8c2dc;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  color: #e9efff;
+  outline: none;
+  font: inherit;
+  transition: .25s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: #e9efff;
+}
+
+select option {
+  background: #141827;
+  color: #ffffff;
+}
