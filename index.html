@@ -522,15 +522,20 @@
       </div>
     </div>
   </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
-  <div class="image-modal" id="imageModal">
+<div class="image-modal" id="imageModal">
   <div class="image-modal-backdrop" onclick="closeImageModal()"></div>
 
   <div class="image-modal-content">
-    <button class="image-modal-close" type="button" onclick="closeImageModal()">✕</button>
+    <button class="image-modal-close" type="button" onclick="closeImageModal()">×</button>
     <img id="imageModalImg" src="" alt="Imagen ampliada del emprendimiento" />
   </div>
 </div>
+
+<!-- SCRIPTS SIEMPRE AL FINAL -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
 </body>
 </html>
