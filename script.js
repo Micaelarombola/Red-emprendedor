@@ -1,7 +1,9 @@
 const SUPABASE_URL = "https://ltcoeivvcrkgtkprqzb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_2CNWKNbS0O2ydd3DNq3_Rw_8XfoWCwD";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabaseClient = window.supabaseClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = window.supabaseClient;
+
 const list = document.getElementById("entrepreneursList");
 const searchInput = document.getElementById("searchInput");
 const categoryFilter = document.getElementById("categoryFilter");
