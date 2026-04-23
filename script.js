@@ -773,4 +773,5 @@
   window.closeImageModal = closeImageModal;
 
   console.log("update supabase fix");
+  console.log("CAMBIO REAL SUPABASE OK");
 })();
