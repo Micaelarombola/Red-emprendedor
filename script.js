@@ -1,8 +1,8 @@
+(() => {
 const SUPABASE_URL = "https://ltcoeivvcrkgtkprqzb.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_2CNWKNbS0O2ydd3DNq3_Rw_8XfoWCwD";
 
-window.supabaseClient = window.supabaseClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const supabase = window.supabaseClient;
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const list = document.getElementById("entrepreneursList");
 const searchInput = document.getElementById("searchInput");
@@ -770,3 +770,5 @@ window.toggleModalAlias = toggleModalAlias;
 window.copyPaymentAlias = copyPaymentAlias;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
+
+})();
