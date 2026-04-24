@@ -584,24 +584,42 @@
     applyFilters();
   }
 
-  function addMessage(id) {
-    const entrepreneur = entrepreneurs.find(item => item.id === id);
-    if (!entrepreneur) return;
+async function addMessage(id) {
+  const entrepreneur = entrepreneurs.find(item => item.id === id);
+  if (!entrepreneur) return;
 
-    const authorInput = document.getElementById(`message-author-${id}`);
-    const textInput = document.getElementById(`message-text-${id}`);
+  const authorInput = document.getElementById(`message-author-${id}`);
+  const textInput = document.getElementById(`message-text-${id}`);
 
-    const author = authorInput?.value.trim() || "";
-    const text = textInput?.value.trim() || "";
+  const author = authorInput?.value.trim() || "";
+  const text = textInput?.value.trim() || "";
 
-    if (!author || !text) {
-      alert("Completá tu nombre y el mensaje.");
-      return;
-    }
-
-    entrepreneur.messages.unshift({ author, text });
-    applyFilters();
+  if (!author || !text) {
+    alert("Completá tu nombre y el mensaje.");
+    return;
   }
+
+  const newMessages = [
+    { author, text, date: new Date().toISOString() },
+    ...(entrepreneur.messages || [])
+  ];
+
+  try {
+    const updated = await updateEntrepreneurField(id, {
+      messages: newMessages
+    });
+
+    entrepreneur.messages = updated.messages || newMessages;
+
+    authorInput.value = "";
+    textInput.value = "";
+
+    applyFilters();
+    alert("Mensaje guardado");
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   function toggleExpand(id) {
     const block = document.getElementById(`expanded-${id}`);
