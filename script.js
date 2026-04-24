@@ -75,11 +75,11 @@
       facebook: "",
       tiktok: "",
       website: "",
-      photo: "assets/webmic/portada.jpg",
+      photo: "assets/3.png",
       gallery: [
-        "assets/webmic/foto1.jpg",
-        "assets/webmic/foto2.jpg",
-        "assets/webmic/foto3.jpg"
+        "assets/1.png",
+        "assets/2.png",
+        "assets/4.jpeg"
       ],
       services: "Páginas web, tiendas online, diseño visual, contenido y presencia digital para marcas y emprendedores.",
       story: "WebMic nace para ayudar a emprendedores a verse más profesionales en internet. La idea es crear páginas y presencia digital que vendan, conecten y hagan crecer marcas reales.",
