@@ -565,12 +565,10 @@
     });
   }
 async function updateEntrepreneurField(id, fields) {
-  const { data, error } = await supabaseClient
+  const { error } = await supabaseClient
     .from("entrepreneurs")
     .update(fields)
-    .eq("id", id)
-    .select()
-    .single();
+    .eq("id", id);
 
   if (error) {
     console.error("Error actualizando:", error);
@@ -578,7 +576,7 @@ async function updateEntrepreneurField(id, fields) {
     throw error;
   }
 
-  return data;
+  return fields;
 }
   async function addComment(id) {
   const entrepreneur = entrepreneurs.find(item => item.id === id);
