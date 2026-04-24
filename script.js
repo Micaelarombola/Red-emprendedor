@@ -564,25 +564,53 @@
       small.textContent = "Ningún archivo seleccionado";
     });
   }
+async function updateEntrepreneurField(id, fields) {
+  const { data, error } = await supabaseClient
+    .from("entrepreneurs")
+    .update(fields)
+    .eq("id", id)
+    .select()
+    .single();
 
-  function addComment(id) {
-    const entrepreneur = entrepreneurs.find(item => item.id === id);
-    if (!entrepreneur) return;
-
-    const authorInput = document.getElementById(`comment-author-${id}`);
-    const textInput = document.getElementById(`comment-text-${id}`);
-
-    const author = authorInput?.value.trim() || "";
-    const text = textInput?.value.trim() || "";
-
-    if (!author || !text) {
-      alert("Completá tu nombre y el comentario.");
-      return;
-    }
-
-    entrepreneur.comments.unshift({ author, text });
-    applyFilters();
+  if (error) {
+    console.error("Error actualizando:", error);
+    alert("No se pudo guardar. Revisá Supabase.");
+    throw error;
   }
+
+  return data;
+}
+  async function addComment(id) {
+  const entrepreneur = entrepreneurs.find(item => item.id === id);
+  if (!entrepreneur) return;
+
+  const authorInput = document.getElementById(`comment-author-${id}`);
+  const textInput = document.getElementById(`comment-text-${id}`);
+
+  const author = authorInput?.value.trim() || "";
+  const text = textInput?.value.trim() || "";
+
+  if (!author || !text) {
+    alert("Completá tu nombre y el comentario.");
+    return;
+  }
+
+  const newComments = [
+    { author, text, date: new Date().toISOString(), replies: [] },
+    ...(entrepreneur.comments || [])
+  ];
+
+  const updated = await updateEntrepreneurField(id, {
+    comments: newComments
+  });
+
+  entrepreneur.comments = updated.comments || newComments;
+
+  authorInput.value = "";
+  textInput.value = "";
+
+  applyFilters();
+}
 
 async function addMessage(id) {
   const entrepreneur = entrepreneurs.find(item => item.id === id);
@@ -599,28 +627,32 @@ async function addMessage(id) {
     return;
   }
 
+  const phone = (entrepreneur.whatsapp || "").replace(/\D/g, "");
+
+  if (!phone) {
+    alert("Este emprendimiento no tiene WhatsApp cargado.");
+    return;
+  }
+
+  const message = `Hola! Soy ${author}. Te escribo desde Red Emprende.%0A%0A${text}`;
+  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
   const newMessages = [
     { author, text, date: new Date().toISOString() },
     ...(entrepreneur.messages || [])
   ];
 
-  try {
-    const updated = await updateEntrepreneurField(id, {
-      messages: newMessages
-    });
+  const updated = await updateEntrepreneurField(id, {
+    messages: newMessages
+  });
 
-    entrepreneur.messages = updated.messages || newMessages;
+  entrepreneur.messages = updated.messages || newMessages;
 
-    authorInput.value = "";
-    textInput.value = "";
+  authorInput.value = "";
+  textInput.value = "";
 
-    applyFilters();
-    alert("Mensaje guardado");
-  } catch (error) {
-    console.error(error);
-  }
+  applyFilters();
 }
-
   function toggleExpand(id) {
     const block = document.getElementById(`expanded-${id}`);
     if (!block) return;
